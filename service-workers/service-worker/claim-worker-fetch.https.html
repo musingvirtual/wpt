@@ -8,6 +8,14 @@
 <script>
 
 promise_test(function(t) {
+  return runTest(t, 'resources/claim-worker-fetch-iframe.html');
+}, 'fetch() in Worker should be intercepted after the client is claimed.');
+
+promise_test(function(t) {
+  return runTest(t, 'resources/claim-nested-worker-fetch-iframe.html');
+}, 'fetch() in nested Worker should be intercepted after the client is claimed.')
+
+function runTest(t, iframe_url) {
   var frame;
   var resource = 'simple.txt';
 
@@ -17,7 +25,7 @@ promise_test(function(t) {
 
   return Promise.resolve()
     // Create the test iframe with a dedicated worker.
-    .then(() => with_iframe('resources/claim-worker-fetch-iframe.html'))
+    .then(() => with_iframe(iframe_url))
     .then(f => frame = f)
 
     // Check the controller and test with fetch in the worker.
@@ -62,7 +70,7 @@ promise_test(function(t) {
     // Cleanup this testcase.
     .then(() => frame.remove())
     .then(() => service_worker_unregister_and_done(t, scope));
-}, 'fetch() in Worker should be intercepted after the client is claimed.')
+}
 
 </script>
 </body>
